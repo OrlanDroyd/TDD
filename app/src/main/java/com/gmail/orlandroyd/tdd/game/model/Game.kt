@@ -2,7 +2,7 @@ package com.gmail.orlandroyd.tdd.game.model
 
 class Game(
     private val questions: List<Question>,
-    private val score: Score = Score(0),
+    val score: Score = Score(0),
 ) {
 
     private var questionIndex = -1

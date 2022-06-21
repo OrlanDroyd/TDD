@@ -1,8 +1,9 @@
 package com.gmail.orlandroyd.tdd.game.model
 
 class Question(
-    private val correctOption: String,
-    private val incorrectOption: String,
+    val correctOption: String,
+    val incorrectOption: String,
+    val imageUrl: String? = null,
 ) {
     var answeredOption: String? = null
         private set
@@ -18,4 +19,7 @@ class Question(
 
         return isAnsweredCorrectly
     }
+
+    fun getOptions(sort: (List<String>) -> List<String> = { it.shuffled() }) =
+        sort(listOf(correctOption, incorrectOption))
 }

@@ -50,6 +50,7 @@ class GameUnitTests {
         game.answer(question, "OPTION")
 
         verify(score).increment()
+//        verify(score, times(1)).increment() // times(1) by default
     }
 
     @Test
