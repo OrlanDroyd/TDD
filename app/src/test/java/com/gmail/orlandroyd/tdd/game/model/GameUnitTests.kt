@@ -1,41 +1,68 @@
 package com.gmail.orlandroyd.tdd.game.model
 
+import com.nhaarman.mockitokotlin2.*
 import org.junit.Assert
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyString
 
 class GameUnitTests {
 
     @Test
-    fun whenIncrementingHighScore_shouldIncrementCurrentScore() {
+    fun whenGettingNextQuestion_shouldReturnIt() {
+        val question1 = Question("CORRECT", "INCORRECT")
+        val questions = listOf(question1)
+        val game = Game(questions)
 
-        val game = Game()
+        val nextQuestion = game.nextQuestion()
 
-        game.incrementScore()
-
-//        Assert.assertEquals(1, game.currentScore)
-        Assert.assertEquals("Current score should have been 1", 1, game.currentScore)
+        Assert.assertSame(question1, nextQuestion)
     }
 
     @Test
-    fun whenIncrementingScore_aboveHighScore_shouldAlsoIncrementHighScore() {
+    fun whenGettingNextQuestion_withoutMoreQuestions_shouldReturnNull() {
+        val question1 = Question("CORRECT", "INCORRECT")
+        val questions = listOf(question1)
+        val game = Game(questions)
 
-        val game = Game()
+        game.nextQuestion()
+        val nextQuestion = game.nextQuestion()
 
-        game.incrementScore()
-
-        Assert.assertEquals(1, game.highestScore)
-
+        Assert.assertNull(nextQuestion)
     }
 
     @Test
-    fun whenIncrementingScore_belowHighScore_shouldNotIncrementHighScore() {
+    fun whenAnswering_shouldDelegateToQuestion() {
+        val question = mock<Question>()
+        val game = Game(listOf(question))
 
-        val game = Game(10)
+        game.answer(question, "OPTION")
 
-        game.incrementScore()
-
-        Assert.assertEquals(10, game.highestScore)
-
+        verify(question).answer(eq("OPTION"))
     }
+
+    @Test
+    fun whenAnsweringCorrectly_shouldIncrementCurrentScore() {
+        val question = mock<Question>()
+        whenever(question.answer(anyString())).thenReturn(true)
+        val score = mock<Score>()
+        val game = Game(listOf(question), score)
+
+        game.answer(question, "OPTION")
+
+        verify(score).increment()
+    }
+
+    @Test
+    fun whenAnsweringIncorrectly_shouldNotIncrementCurrentScore() {
+        val question = mock<Question>()
+        whenever(question.answer(anyString())).thenReturn(false)
+        val score = mock<Score>()
+        val game = Game(listOf(question), score)
+
+        game.answer(question, "OPTION")
+
+        verify(score, never()).increment()
+    }
+
 
 }
