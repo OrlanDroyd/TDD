@@ -5,22 +5,32 @@ import com.gmail.orlandroyd.tdd.common.network.CocktailsApi
 import com.nhaarman.mockitokotlin2.*
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.junit.MockitoJUnitRunner
 
+@RunWith(MockitoJUnitRunner::class)
 class RepositoryUnitTests {
 
     private lateinit var repository: CocktailsRepository
+
+    @Mock
     private lateinit var api: CocktailsApi
+
+    @Mock
     private lateinit var sharedPreferences: SharedPreferences
+
+    @Mock
     private lateinit var sharedPreferencesEditor: SharedPreferences.Editor
 
     @Before
     fun setup() {
-        api = mock()
-        sharedPreferencesEditor = mock()
-        sharedPreferences = mock()
-        whenever(sharedPreferences.edit()).thenReturn(sharedPreferencesEditor)
+        whenever(sharedPreferences.edit())
+            .thenReturn(sharedPreferencesEditor)
+
         repository = CocktailsRepositoryImpl(api, sharedPreferences)
     }
+
 
     @Test
     fun `save score - should save to SharedPreferences`() {
